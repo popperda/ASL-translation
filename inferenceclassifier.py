@@ -109,7 +109,7 @@ while(True):
             try:
                 prediction = model.predict([np.asarray(data_aux)])
             except ValueError:
-                print("error! Something may be blocking the way. please try again.")
+                print("...")
             predicted_character = labels_dict[int(prediction[0])]
             likelinessarray.append(predicted_character)
 
