@@ -1,3 +1,4 @@
+
 import os
 import cv2
 import pickle
@@ -55,5 +56,4 @@ predictiontest = model.predict(tests)
 print(np.argmax(predictiontest,axis =1))
 
 for n in range (0,predictiontest.size-2):
-
     print(classes[np.argmax(predictiontest,axis =1)[n]])
