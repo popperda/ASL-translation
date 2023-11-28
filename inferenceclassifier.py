@@ -7,10 +7,13 @@ import numpy as np
 model_dict = pickle.load(open('./model.p','rb'))
 model = model_dict['model']
 
+def grammar_check(text):
+    return text
 
+import keyboard
 labels_dict = {0:'A', 1:'B', 2:'C', 3:'D', 4:'E', 5:'F', 6:'G', 7:'H', 8:'I', 9:'J', 10:'K', 11 : 'L', 12 : 'M', 13 : 'N', 14 : 'O', 15 : 'P', 16   : 'Q', 17 : '   R', 18 : 'S', 19 : ' T', 20 : ' U', 21 : ' V', 22 : ' W', 23 : ' X', 24 : ' Y', 25 : ' Z'}
 
-
+message = []
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -18,7 +21,7 @@ mp_drawing_styles = mp.solutions.drawing_styles
 
 hands = mp_hands.Hands()
  
-
+text_X_coord = 10
 
  
 cap = cv2.VideoCapture(0)
@@ -74,7 +77,7 @@ while(True):
         #frame_rgb = np.array(frame_rgb)
         try:
             frame_rgb1 = frame_rgb[y1crop:y2crop, x1crop:x2crop]
-            #cv2.imshow('frame_rgb',frame_rgb1)
+            cv2.imshow('frame_rgb',frame_rgb1)
         except cv2.error:
             print("")
         #frame_rgb2 = cv2.cvtColor(frame_rgb1, cv2.COLOR_BGR2RGB)
@@ -108,6 +111,7 @@ while(True):
             
             try:
                 prediction = model.predict([np.asarray(data_aux)])
+                print(labels_dict[int(prediction[0])])
             except ValueError:
                 print("...")
             predicted_character = labels_dict[int(prediction[0])]
@@ -116,18 +120,40 @@ while(True):
             #print(predicted_character)
 
 
-            #cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 0), 4)
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 0), 4)
 
-            #cv2.putText(frame, predicted_character, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3, cv2.LINE_AA)
-            if cv2.waitKey(1) & 0xFF == ord('e'):
-                
-                print((max(set(likelinessarray), key=likelinessarray.count)))    
-                likelinessarray = []
+            cv2.putText(frame, predicted_character, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3, cv2.LINE_AA)
+            if keyboard.is_pressed('e'):
+                message.append(predicted_character)
+                textsize = cv2.getTextSize((max(set(likelinessarray), key=likelinessarray.count)), cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                text_X_coord = (frame.shape[1] - textsize[0]) // 2
+                print((max(set(likelinessarray), key=likelinessarray.count)))   
+                #cv2.putText(frame, (max(set(likelinessarray), key=likelinessarray.count)), (text_X_coord, 270),
+                 #       cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA) 
+                #likelinessarray = []
+            if keyboard.is_pressed('r'):
+                message = []
+                string = ""
+            if keyboard.is_pressed('f'):
+                message.append(" ")
+            if keyboard.is_pressed('backspace'):
+                try:
+                    message.pop()
+                except IndexError:
+                    print("Keyboard")
     if cv2.waitKey(1) & 0xFF == ord('z'):
         break
     
        
 
-    
+    string = "".join(message)
+    cv2.putText(frame, string, (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
     cv2.imshow('frame',frame)
+    
+    print(string)
+    
     cv2.waitKey(10)
+    #if keyboard.is_pressed(' '):
+    #    message.append(" ")
+    #if keyboard.is_pressed('backspace'):
+    #    message.pop()

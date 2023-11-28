@@ -1,5 +1,5 @@
 import os
-folder = r'CS-IA-\H'
+folder = r'data/1'
 count = 0
 
 for f in os.listdir(folder):
