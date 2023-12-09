@@ -234,7 +234,7 @@ def gen_frames():
 
                 cv2.putText(frame, predicted_character, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3, cv2.LINE_AA)
                 if keyboard.is_pressed('e'):
-                    message.append(predicted_character)
+                    message.append(predicted_character.strip())
                     textsize = cv2.getTextSize((max(set(likelinessarray), key=likelinessarray.count)), cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
                     text_X_coord = (frame.shape[1] - textsize[0]) // 2
                     #print((max(set(likelinessarray), key=likelinessarray.count)))  
